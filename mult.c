@@ -1,26 +1,14 @@
+#include <omp.h>
 #include <stdio.h>
+#include <stdlib.h>
 #define N 10
+#define M 100
 
-// Get matrix elements
-void getMatrix(int matrix[][N], int rows, int cols){
+// Build an array of random numbers with the given dimensions
+void buildMatrix(int matrix[][N], int rows, int cols){
     for (int i = 0; i < rows; i++){
-        printf("Row %d: ", i+1);
         for (int j = 0; j < cols; j++)
-            scanf("%d", &matrix[i][j]);
-   }
-}
-
-// Matrix multiplication
-void multiply(int one[][N], int two[][N], int ans[][N], int rows1, int cols1, int rows2, int cols2) {
-    for (int i = 0; i < rows1; i++){
-        for (int j = 0; j < cols2; j++)
-            ans[i][j] = 0;
-    }
-    for (int i = 0; i < rows1; i++){
-        for (int j = 0; j < cols2; j++){
-            for (int k = 0; k < cols1; k++)
-                ans[i][j] += one[i][k] * two[k][j];
-      }
+            matrix[i][j] = rand() % M;
    }
 }
 
@@ -28,13 +16,15 @@ void multiply(int one[][N], int two[][N], int ans[][N], int rows1, int cols1, in
 void printMatrix(int ans[][N], int rows, int cols){
     for (int i = 0; i < rows; i++){
         for (int j = 0; j < cols; j++)
-            printf("%d ", ans[i][j]);
+            printf("%d\t", ans[i][j]);
         printf("\n");
     }
 }
 
-int main(){
+int main(int argc, char *argv[]){
+    int num_threads = omp_get_max_threads(), tid;
     int one[N][N], two[N][N], ans[N][N], rows1, cols1, rows2, cols2;
+
     printf("Rows and columns matrix 1: ");
     scanf("%d %d", &rows1, &cols1);
     printf("Rows and columns matrix 2: ");
@@ -42,11 +32,26 @@ int main(){
     
     if (cols1 == rows2){
         printf("\nMATRIX 1\n");
-        getMatrix(one, rows1, cols1);
+        buildMatrix(one, rows1, cols1);
+        printMatrix(one, rows1, cols1);
         printf("\nMATRIX 2\n");
-        getMatrix(two, rows2, cols2);
+        buildMatrix(two, rows2, cols2);
+        printMatrix(two, rows2, cols2);
         
-        multiply(one, two, ans, rows1, cols1, rows2, cols2);
+        for (int i = 0; i < rows1; i++){
+            for (int j = 0; j < cols2; j++)
+                ans[i][j] = 0;
+        }
+        
+        #pragma omp parallel private(tid){
+            #pragma omp parallel for
+            for (int i = 0; i < rows1; i++){
+                for (int j = 0; j < cols2; j++){
+                    for (int k = 0; k < cols1; k++)
+                        ans[i][j] += one[i][k] * two[k][j];
+                }
+            }
+        }
 
         printf("\nRESULT\n");
         printMatrix(ans, rows1, cols2);
