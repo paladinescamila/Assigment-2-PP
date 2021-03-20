@@ -1,5 +1,5 @@
-# Matrix multiplication using OpenMP parallelism
+# Matrix multiplication using OpenMP
 
-Compile: `gcc -o mult -fopenmp mult.c`
-Execute: `./mult`
-Time: `time ./mult`
+-   Compile: `gcc -o mult -fopenmp mult.c`
+-   Execute: `./mult`
+-   Time: `time ./mult`
