@@ -4,6 +4,7 @@
 #define N 10
 #define M 100
 
+
 // Build an array of random numbers with the given dimensions
 void buildMatrix(int matrix[][N], int rows, int cols){
     for (int i = 0; i < rows; i++){
@@ -11,6 +12,7 @@ void buildMatrix(int matrix[][N], int rows, int cols){
             matrix[i][j] = rand() % M;
    }
 }
+
 
 // Print the matrix
 void printMatrix(int matrix[][N], int rows, int cols){
@@ -21,12 +23,15 @@ void printMatrix(int matrix[][N], int rows, int cols){
     }
 }
 
+
 // Multiply two matrices
 void multiplyMatrices(int A[][N], int B[][N], int C[N][N], int r1, int c1, int r2, int c2){
+    double t_start, t_wall_clock;
     for (int i = 0; i < r1; i++){
         for (int j = 0; j < c2; j++)
             C[i][j] = 0;
     }
+    t_start = omp_get_wtime();
     #pragma omp parallel for
     for (int i = 0; i < r1; i++){
         for (int j = 0; j < c2; j++){
@@ -34,7 +39,10 @@ void multiplyMatrices(int A[][N], int B[][N], int C[N][N], int r1, int c1, int r
                 C[i][j] += A[i][k] * B[k][j];
         }
     }
+    t_wall_clock = omp_get_wtime() - t_startrt;
+    printf("%f", t_wall_clock);
 }
+
 
 int main(int argc, char *argv[]){
     // int num_threads = omp_get_max_threads(), tid;
