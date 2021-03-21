@@ -22,7 +22,7 @@ void printMatrix(int ans[][N], int rows, int cols){
 }
 
 int main(int argc, char *argv[]){
-    int num_threads = omp_get_max_threads(), tid;
+    // int num_threads = omp_get_max_threads(), tid;
     int one[N][N], two[N][N], ans[N][N], rows1, cols1, rows2, cols2;
 
     printf("Rows and columns matrix 1: ");
@@ -42,14 +42,11 @@ int main(int argc, char *argv[]){
             for (int j = 0; j < cols2; j++)
                 ans[i][j] = 0;
         }
-        
-        #pragma omp parallel private(tid){
-            #pragma omp parallel for
-            for (int i = 0; i < rows1; i++){
-                for (int j = 0; j < cols2; j++){
-                    for (int k = 0; k < cols1; k++)
-                        ans[i][j] += one[i][k] * two[k][j];
-                }
+        #pragma omp parallel for
+        for (int i = 0; i < rows1; i++){
+            for (int j = 0; j < cols2; j++){
+                for (int k = 0; k < cols1; k++)
+                    ans[i][j] += one[i][k] * two[k][j];
             }
         }
 
