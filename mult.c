@@ -21,36 +21,41 @@ void printMatrix(int matrix[][N], int rows, int cols){
     }
 }
 
+// Multiply two matrices
+void multiplyMatrices(int A[][N], int B[][N], int C[N][N], int r1, int c1, int r2, int c2){
+    for (int i = 0; i < r1; i++){
+        for (int j = 0; j < c2; j++)
+            C[i][j] = 0;
+    }
+    #pragma omp parallel for
+    for (int i = 0; i < r1; i++){
+        for (int j = 0; j < c2; j++){
+            for (int k = 0; k < c1; k++)
+                C[i][j] += A[i][k] * B[k][j];
+        }
+    }
+}
+
 int main(int argc, char *argv[]){
     // int num_threads = omp_get_max_threads(), tid;
     int A[N][N], B[N][N], C[N][N], r1, c1, r2, c2;
 
-    printf("Rows and columns matrix 1: ");
+    printf("Rows and columns matrix A: ");
     scanf("%d %d", &r1, &c1);
-    printf("Rows and columns matrix 2: ");
+    printf("Rows and columns matrix B: ");
     scanf("%d %d", &r2, &c2);
     
     if (c1 == r2){
-        printf("\nMATRIX 1\n");
+        printf("\nMATRIX A:\n");
         buildMatrix(A, r1, c1);
         printMatrix(A, r1, c1);
-        printf("\nMATRIX 2\n");
+
+        printf("\nMATRIX B:\n");
         buildMatrix(B, r2, c2);
         printMatrix(B, r2, c2);
-        
-        for (int i = 0; i < r1; i++){
-            for (int j = 0; j < c2; j++)
-                C[i][j] = 0;
-        }
-        #pragma omp parallel for
-        for (int i = 0; i < r1; i++){
-            for (int j = 0; j < c2; j++){
-                for (int k = 0; k < c1; k++)
-                    C[i][j] += A[i][k] * B[k][j];
-            }
-        }
 
-        printf("\nRESULT\n");
+        printf("\nMATRIX C (A.B)\n");
+        multiplyMatrices(A, B, C, r1, c1, r2, c2);
         printMatrix(C, r1, c2);
     }
     else{
