@@ -31,7 +31,7 @@ double multiplyMatrices(int A[N][N], int B[N][N], int C[N][N], lli r1, lli c1, l
     // omp_set_nested(1);
     t_start = omp_get_wtime();
 
-    #pragma omp parallel for
+    // #pragma omp parallel for
     for (lli i = 0; i < r1; i++){
         // #pragma omp parallel for
         for (lli j = 0; j < c2; j++){
@@ -49,15 +49,11 @@ double multiplyMatrices(int A[N][N], int B[N][N], int C[N][N], lli r1, lli c1, l
 // Tests with different dimensions of C
 int main(int argc, char *argv[]){
     int A[N][N], B[N][N], C[N][N];
-    lli max, iter;
-    scanf("%lld %lld", &max, &iter);
-
-    for (lli i = iter; i <= max; i += iter){
-        buildMatrix(A, i, i);
-        buildMatrix(B, i, i);
-        double t_wall_clock = multiplyMatrices(A, B, C, i, i, i, i);
-        printf("Time (N = %lld): %f\n", i, t_wall_clock);
-    }
+    lli max=500;
+    buildMatrix(A, max, max);
+    buildMatrix(B, max, max);
+    double t_wall_clock = multiplyMatrices(A, B, C, max, max, max, max);
+    // printf("Time (N = %lld): %f\n", max, t_wall_clock);
 
     
     return 0;
