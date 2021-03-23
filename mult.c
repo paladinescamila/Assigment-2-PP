@@ -5,15 +5,13 @@
 #define M 10
 #define lli long long int
 
-// Build an array of random numbers with the given dimensions
-void buildMatrix(int matrix[N][N], lli rows, lli cols){
+void buildRandomMatrix(int matrix[N][N], lli rows, lli cols){
     for (lli i = 0; i < rows; i++){
         for (lli j = 0; j < cols; j++)
             matrix[i][j] = rand() % M;
    }
 }
 
-// Multiply two matrices
 double multiplyMatrices(int A[N][N], int B[N][N], int C[N][N], lli r1, lli c1, lli r2, lli c2){
     double t_start, t_wall_clock;
     omp_set_nested(1);
@@ -31,12 +29,11 @@ double multiplyMatrices(int A[N][N], int B[N][N], int C[N][N], lli r1, lli c1, l
     return t_wall_clock;
 }
 
-// Tests with different dimensions of C
 int main(int argc, char *argv[]){
     int A[N][N], B[N][N], C[N][N];
     lli max=500;
-    buildMatrix(A, max, max);
-    buildMatrix(B, max, max);
+    buildRandomMatrix(A, max, max);
+    buildRandomMatrix(B, max, max);
     double t_wall_clock = multiplyMatrices(A, B, C, max, max, max, max);
     printf("Time (N = %lld): %f\n", max, t_wall_clock);
     return 0;
